@@ -179,4 +179,38 @@ def layoutToMorphism (L : FlatLayout)
     -- with non-zero strides have different strides (tractability)
     sorry -- Requires detailed proof about stride uniqueness
 
+/-! ### Encoding Tests -/
+
+section EncodingTests
+
+-- Test layout: 2x3 matrix in row-major order
+def rowMajorLayout : FlatLayout := mkLayout [(2, 1), (3, 2)]
+
+-- Test codomain extraction
+#eval layoutToCodomain rowMajorLayout  -- Should be [2, 3] (sorted by stride)
+
+-- Test stride position finding
+#eval findStridePosition rowMajorLayout 1  -- Position of stride 1
+#eval findStridePosition rowMajorLayout 2  -- Position of stride 2
+#eval findStridePosition rowMajorLayout 0  -- none (projected)
+
+-- Test layout map function
+#eval layoutMapFun rowMajorLayout ⟨0, by omega⟩  -- Where does dim 0 go?
+#eval layoutMapFun rowMajorLayout ⟨1, by omega⟩  -- Where does dim 1 go?
+
+-- Test the full encoding
+#eval (layoutToMorphism rowMajorLayout).toLayout  -- Should reconstruct the layout
+
+-- Test with a projected dimension (stride = 0)
+def projectedLayout : FlatLayout := mkLayout [(2, 0), (3, 1)]  -- First dim projected
+#eval FlatLayout.isTractable projectedLayout
+#eval layoutToCodomain projectedLayout  -- Should be [3] only
+
+-- Test coalesce then encode
+def coalesceableLayout : FlatLayout := mkLayout [(2, 1), (2, 2), (2, 4)]
+#eval FlatLayout.coalesce coalesceableLayout  -- Should be [(8, 1)]
+#eval layoutToCodomain coalesceableLayout
+
+end EncodingTests
+
 end CuTe
