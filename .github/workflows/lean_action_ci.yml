@@ -19,8 +19,7 @@ jobs:
       - uses: leanprover/lean-action@v1
       - uses: leanprover-community/docgen-action@v1
         with:
-          working-directory: docbuild
-          library-name: CuTe
+          lake_package_directory: docbuild
       - uses: actions/upload-pages-artifact@v3
         with:
           path: docbuild/.lake/build/doc
