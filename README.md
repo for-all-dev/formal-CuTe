@@ -10,24 +10,26 @@ CuTe (CUDA Templates) is NVIDIA's tensor layout library. This project formalizes
 
 ```
 CuTe/
-├── Layout/           # Core layout types and operations
-│   ├── Defs.lean     # ShapeStridePair, FlatLayout
-│   ├── Order.lean    # Lexicographic ordering ⪯
-│   ├── Tractable.lean# Tractability predicate
-│   └── Operations.lean # coalesce, complement
-├── Category/         # Categorical framework
-│   ├── Fin0.lean     # Pointed finite sets
-│   └── Tuple.lean    # Category Tuple, morphisms
+├── Layout/
+│   ├── Defs.lean       # ShapeStridePair, FlatLayout, NestedTuple
+│   ├── Order.lean      # Lexicographic ordering ⪯
+│   ├── Tractable.lean  # Tractability, non-degeneracy predicates
+│   └── Operations.lean # coalesce, complement, toCoords
+├── Category/
+│   ├── Fin0.lean       # Pointed finite sets (Option (Fin n))
+│   ├── Tuple.lean      # Category Tuple, TupleMorphism, toLayout
+│   ├── Functor.lean    # Realization functor, colex
+│   └── Nest.lean       # Nested tuples, hierarchical layouts
 └── Morphism/
-    └── Encode.lean   # Layout ↔ Morphism bijection
+    └── Encode.lean     # Layout ↔ Morphism bijection
 ```
 
-## Key Definitions
+## Key Concepts
 
-- **Layout**: List of (shape, stride) pairs defining a memory mapping
-- **Tractable**: Strides satisfy divisibility conditions
-- **TupleMorphism**: Dimension-preserving map between tuples
-- **Correspondence**: Tractable layouts ↔ tuple morphisms in standard form
+- **Layout**: List of (shape, stride) pairs `[(s₁,d₁), ..., (sₘ,dₘ)]`
+- **Tractable**: Divisibility condition on strides
+- **TupleMorphism**: Dimension-preserving pointed set map
+- **Correspondence**: Tractable layouts ↔ tuple morphisms
 
 ## Building
 

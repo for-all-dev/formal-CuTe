@@ -491,21 +491,39 @@ layoutMapFun [(2,1), (3,2)] 0 = some 0              ✓
 layoutMapFun [(2,1), (3,2)] 1 = some 1              ✓
 ```
 
-### Next Phase: Proofs and Extensions
+### Completed (Phase 3: Extended Categorical Framework)
+
+| File | Contents | Status |
+|------|----------|--------|
+| `CuTe/Category/Functor.lean` | Realization functor, `toLayout_id`, `colex` | ✓ |
+| `CuTe/Category/Nest.lean` | Nested tuples, `NestObj`, `toHierLayout` | ✓ |
+
+#### Phase 3 Test Results
+
+```lean
+-- Realization functor
+(TupleMorphism.id [2,3]).layoutFun [1,2] = 5         ✓
+colex [2,3] [1,2] = 5                                ✓
+
+-- Nested tuples
+nested234.flatten = [2, 3, 4]                        ✓
+nested234.prod = 24                                  ✓
+nested234.toHierLayout = [(2,1), (3,2), (4,6)]      ✓
+```
+
+### Remaining Work
 
 | File | Contents | Status |
 |------|----------|--------|
 | `CuTe/Morphism/Encode.lean` | `dim_preserve` and `injective` proofs | Pending |
-| `CuTe/Category/Nest.lean` | Category Nest for nested tuples | Pending |
-| `CuTe/Category/Functor.lean` | Realization functor `|·|` | Pending |
-| `CuTe/Morphism/Compose.lean` | Morphism composition | Pending |
+| `CuTe/Morphism/Compose.lean` | Composition examples | Pending |
 
 ### Key Theorems
 
 - [ ] `dim_preserve`: Dimension preservation in `layoutToMorphism`
 - [ ] `injective`: Injectivity away from basepoint in `layoutToMorphism`
+- [ ] `toLayout_comp_apply`: Composition functoriality
+- [ ] `id_layout_eq_colex`: Identity layout equals colexicographic
 - [ ] Correspondence theorem (tractable layouts ↔ tuple morphisms)
-- [ ] Functor laws (`|g ∘ f| = |g| ∘ |f|`)
 - [ ] Coalesce preserves layout function
 - [ ] Complement involution
-- [ ] Agreement theorems (layout ops = morphism ops)

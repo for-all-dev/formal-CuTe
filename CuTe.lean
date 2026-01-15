@@ -5,4 +5,6 @@ import CuTe.Layout.Tractable
 import CuTe.Layout.Operations
 import CuTe.Category.Fin0
 import CuTe.Category.Tuple
+import CuTe.Category.Functor
+import CuTe.Category.Nest
 import CuTe.Morphism.Encode
