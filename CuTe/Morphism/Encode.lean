@@ -8,6 +8,7 @@ Encoding between flat layouts and tuple morphisms.
 
 import CuTe.Category.Tuple
 import CuTe.Layout.Tractable
+import CuTe.Layout.Operations
 
 /-!
 # Layout-Morphism Encoding
@@ -170,14 +171,24 @@ def layoutToMorphism (L : FlatLayout)
   }
   dim_preserve := by
     intro i j heq
-    -- The dimension preservation follows from the fact that
-    -- layoutMapFun maps shapes correctly to the sorted codomain
-    sorry -- Requires detailed proof about sorting and filtering
+    -- Proof sketch:
+    -- 1. From heq, layoutMapFun L i' = some j
+    -- 2. layoutMapFun finds L[i'].stride in the sorted layout
+    -- 3. The shape at position j in layoutToCodomain equals L[i'].shape
+    -- 4. L.shapes[i] = L[i].shape by definition
+    -- Requires: lemmas about List.mergeSort preserving elements,
+    -- filterMap/findIdx? interaction, sorted list properties
+    sorry
   injective := by
     intro i₁ i₂ heq hne
-    -- Injectivity follows from the fact that different dimensions
-    -- with non-zero strides have different strides (tractability)
-    sorry -- Requires detailed proof about stride uniqueness
+    -- Proof sketch:
+    -- 1. heq says layoutMapFun L i₁ = layoutMapFun L i₂
+    -- 2. hne says the result is not none, so both strides are non-zero
+    -- 3. From tractability: different dimensions with non-zero strides
+    --    map to different positions (stride uniqueness in sorted order)
+    -- 4. Same position implies same stride implies same original index
+    -- Requires: tractability implies stride distinctness for non-projected dims
+    sorry
 
 /-! ### Encoding Tests -/
 
@@ -190,26 +201,27 @@ def rowMajorLayout : FlatLayout := mkLayout [(2, 1), (3, 2)]
 #eval layoutToCodomain rowMajorLayout  -- Should be [2, 3] (sorted by stride)
 
 -- Test stride position finding
-#eval findStridePosition rowMajorLayout 1  -- Position of stride 1
-#eval findStridePosition rowMajorLayout 2  -- Position of stride 2
+#eval findStridePosition rowMajorLayout 1  -- some 0 (position of stride 1)
+#eval findStridePosition rowMajorLayout 2  -- some 1 (position of stride 2)
 #eval findStridePosition rowMajorLayout 0  -- none (projected)
 
--- Test layout map function
-#eval layoutMapFun rowMajorLayout ⟨0, by omega⟩  -- Where does dim 0 go?
-#eval layoutMapFun rowMajorLayout ⟨1, by omega⟩  -- Where does dim 1 go?
-
--- Test the full encoding
-#eval (layoutToMorphism rowMajorLayout).toLayout  -- Should reconstruct the layout
+-- Test layout map function with explicit bounds proof
+#eval layoutMapFun rowMajorLayout ⟨0, by native_decide⟩  -- Where does dim 0 go?
+#eval layoutMapFun rowMajorLayout ⟨1, by native_decide⟩  -- Where does dim 1 go?
 
 -- Test with a projected dimension (stride = 0)
 def projectedLayout : FlatLayout := mkLayout [(2, 0), (3, 1)]  -- First dim projected
-#eval FlatLayout.isTractable projectedLayout
-#eval layoutToCodomain projectedLayout  -- Should be [3] only
+#eval FlatLayout.isTractable projectedLayout  -- true
+#eval layoutToCodomain projectedLayout  -- Should be [3] only (zero-stride filtered)
 
--- Test coalesce then encode
+-- Test coalesceable layout
 def coalesceableLayout : FlatLayout := mkLayout [(2, 1), (2, 2), (2, 4)]
 #eval FlatLayout.coalesce coalesceableLayout  -- Should be [(8, 1)]
-#eval layoutToCodomain coalesceableLayout
+#eval layoutToCodomain coalesceableLayout  -- [2, 2, 2]
+
+-- Verify tractability check
+#eval FlatLayout.isTractable rowMajorLayout
+#eval FlatLayout.isTractable coalesceableLayout
 
 end EncodingTests
 

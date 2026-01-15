@@ -463,19 +463,47 @@ toCoords [(2,1), (3,2)] 5         = [1, 2]          ✓
 fromCoords [(2,1), (3,2)] [1,2]   = 5               ✓
 ```
 
-### Next Phase: Category Theory
+### Completed (Phase 2: Category Theory)
 
 | File | Contents | Status |
 |------|----------|--------|
-| `CuTe/Category/Fin0.lean` | Pointed finite sets `Fin₀` | Pending |
-| `CuTe/Category/Tuple.lean` | Category Tuple, morphisms | Pending |
+| `CuTe/Category/Fin0.lean` | Pointed finite sets `Fin₀` as `Option (Fin n)` | ✓ |
+| `CuTe/Category/Tuple.lean` | Category Tuple, morphisms, `toLayout` functor | ✓ |
+| `CuTe/Morphism/Encode.lean` | `layoutToMorphism`, `morphismToLayout`, tests | ✓ (sorries in proofs) |
+
+#### Phase 2 Test Results
+
+```lean
+-- Morphism → Layout (via toLayout)
+(TupleMorphism.id [2,3]).toLayout = [(2,1), (3,2)]   ✓
+
+-- Layout → Codomain extraction
+layoutToCodomain [(2,1), (3,2)]   = [2, 3]           ✓
+layoutToCodomain [(2,0), (3,1)]   = [3]              ✓  -- zero-stride filtered
+
+-- Stride position mapping
+findStridePosition [(2,1), (3,2)] 1 = some 0        ✓
+findStridePosition [(2,1), (3,2)] 2 = some 1        ✓
+findStridePosition [(2,1), (3,2)] 0 = none          ✓
+
+-- Layout map function
+layoutMapFun [(2,1), (3,2)] 0 = some 0              ✓
+layoutMapFun [(2,1), (3,2)] 1 = some 1              ✓
+```
+
+### Next Phase: Proofs and Extensions
+
+| File | Contents | Status |
+|------|----------|--------|
+| `CuTe/Morphism/Encode.lean` | `dim_preserve` and `injective` proofs | Pending |
 | `CuTe/Category/Nest.lean` | Category Nest for nested tuples | Pending |
 | `CuTe/Category/Functor.lean` | Realization functor `|·|` | Pending |
-| `CuTe/Morphism/Encode.lean` | Layout ↔ Morphism bijection | Pending |
 | `CuTe/Morphism/Compose.lean` | Morphism composition | Pending |
 
-### Key Theorems (Pending)
+### Key Theorems
 
+- [ ] `dim_preserve`: Dimension preservation in `layoutToMorphism`
+- [ ] `injective`: Injectivity away from basepoint in `layoutToMorphism`
 - [ ] Correspondence theorem (tractable layouts ↔ tuple morphisms)
 - [ ] Functor laws (`|g ∘ f| = |g| ∘ |f|`)
 - [ ] Coalesce preserves layout function
