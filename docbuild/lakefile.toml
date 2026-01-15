@@ -1,0 +1,13 @@
+name = "docbuild"
+reservoir = false
+version = "0.1.0"
+packagesDir = "../.lake/packages"
+
+[[require]]
+name = "CuTe"
+path = "../"
+
+[[require]]
+scope = "leanprover"
+name = "doc-gen4"
+rev = "77ef3eb515ad6bd125c596f0b164349d4a7d5bf5"
